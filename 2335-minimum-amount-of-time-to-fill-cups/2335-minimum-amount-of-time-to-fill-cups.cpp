@@ -1,22 +1,19 @@
 class Solution {
 public:
     int fillCups(vector<int>& amount) {
-        priority_queue<int> q;
-        for(int i = 0; i<3; i++){
-            q.push(amount[i]);
+        sort(amount.begin(), amount.end());
+        int x = amount[0];
+        int y = amount[1];
+        int z = amount[2];
+        
+        int sum = x+y+z;
+        
+        if(x+y >z){
+            return ((sum/2) + (sum%2));
         }
-        int count;
-        while(q.top()!=0){
-            int num1 = q.top();
-            num1--;
-            q.pop();
-            int num2 = q.top();
-            num2--;
-            q.pop();
-            q.push(num1);
-            q.push(num2);
-            count++;
+        if(x==0 && y==0){
+            return z;
         }
-        return count;
+        return z;
     }
 };
