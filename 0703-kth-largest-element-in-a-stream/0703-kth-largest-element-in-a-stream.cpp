@@ -4,25 +4,27 @@ public:
     int size;
     KthLargest(int k, vector<int>& nums) {
         size = k;
-        for(int x : nums){
-            q.push(x);
-            if(q.size() > k){
+        int x= min(k,(int)nums.size());
+        for(int i=0; i<x; i++){
+            q.push(nums[i]);
+        }
+        for(int i=k; i<nums.size(); i++){
+            if(nums[i] > q.top()){
                 q.pop();
+                q.push(nums[i]);
             }
         }
     }
     
     int add(int val) {
-        q.push(val);
-        if(q.size() > size){
+        if(q.size()<size){
+            q.push(val);
+            return q.top();
+        }
+        if(val > q.top()){
             q.pop();
+            q.push(val);
         }
         return q.top();
     }
 };
-
-/**
- * Your KthLargest object will be instantiated and called as such:
- * KthLargest* obj = new KthLargest(k, nums);
- * int param_1 = obj->add(val);
- */
