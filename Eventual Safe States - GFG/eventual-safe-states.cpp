@@ -9,50 +9,40 @@ using namespace std;
 // User function Template for C++
 
 class Solution {
-    
-  private:
-  bool dfscheck(int node, int vis[], int pvis[], vector<int> adj[], int check[]){
-      vis[node] = 1;
-      pvis[node] = 1;
-      check[node] = 0;
-      
-      for(auto it: adj[node]){
-          if(!vis[it]){
-              if(dfscheck(it, vis, pvis, adj, check) == true){
-                  check[it] = 0;
-                  return true;
-              }
-          }
-          else if(pvis[it]){
-              check[it] = 0;
-              return true;
-          }
-      }
-      
-      check[node] = 1;
-      pvis[node] = 0;
-      return false;
-      
-  }
-  
   public:
     vector<int> eventualSafeNodes(int V, vector<int> adj[]) {
-        // code here
-        int vis[V] = {0};
-        int pvis[V] = {0};
-        int check[V] ={0};
-        vector<int> safeNode;
+        // Using BFS - Topological Sort
+        int indegree[V] ={0};
+        vector<int> adjRev[V];
         
-        for(int i =-0; i<V; i++){
-            if(!vis[i]){
-                dfscheck(i, vis, pvis, adj, check);
+        for(int i=0; i<V; i++){
+            //i->it
+            // converted to it->i
+            for(auto it : adj[i]){
+                adjRev[it].push_back(i);
+                indegree[i]++;
             }
         }
         
-        for(int i =0; i<V; i++){
-            if(check[i] == 1)
-            safeNode.push_back(i);
+        queue<int> q;
+        for(int i=0; i<V; i++){
+           if(indegree[i] == 0){
+               q.push(i);
+           } 
         }
+        
+        vector<int> safeNode;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            safeNode.push_back(node);
+            
+            for(auto it : adjRev[node]){
+                indegree[it]--;
+                if(indegree[it] == 0) q.push(it);
+            }
+        }
+        sort(safeNode.begin(), safeNode.end());
         return safeNode;
     }
 };
